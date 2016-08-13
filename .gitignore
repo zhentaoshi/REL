@@ -1,5 +1,9 @@
 ## LyX
 *.lyx~
+*.csv
+*.mat
+*.xls
+*.xlsx
 
 ## SWP
 *.bak
