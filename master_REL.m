@@ -46,4 +46,6 @@ optionsCon    = optimset('Algorithm', 'active-set', 'Display', 'off',...
 [b_PEL, L, PELExitFlag] = fmincon( EL_fval, bPELInit,[],[],[],[],...
     lowerLimit(1:dx), upperLimit(1:dx),[], optionsCon );
 [~, gam] = gamm_msk(b_PEL);
-b_PEL;
+b_PEL
+
+
