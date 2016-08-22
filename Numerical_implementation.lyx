@@ -1,0 +1,789 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{amsthm}
+
+\renewcommand\theenumi{(\alph{enumi})}
+\renewcommand\labelenumi{\theenumi}
+
+\theoremstyle{definition}
+\newtheorem{remk}{Remark}
+
+\newtheoremstyle{proof}
+  {\topsep}   % ABOVESPACE
+  {\topsep}   % BELOWSPACE
+  {}  % BODYFONT
+  {0pt}       % INDENT (empty value is the same as 0pt)
+  {} % HEADFONT
+  {}         % HEADPUNCT
+  {0pt} % HEADSPACE
+  {}          % CUSTOM-HEAD-SPEC
+
+\theoremstyle{proof}
+\newtheorem*{proofs}{}
+
+%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\date{}
+\end_preamble
+\use_default_options false
+\begin_modules
+theorems-ams-bytype
+theorems-ams-extended-bytype
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format dvi
+\output_sync 1
+\output_sync_macro "\synctex=-1"
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing onehalf
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize letterpaper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\branch abc
+\selected 1
+\filename_suffix 0
+\color #faf0e6
+\end_branch
+\branch pf of gamma = 0
+\selected 0
+\filename_suffix 0
+\color #faf0e6
+\end_branch
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Numerical Implementation of REL
+\end_layout
+
+\begin_layout Author
+Zhentao Shi
+\begin_inset Newline newline
+\end_inset
+
+first draft: September, 2014
+\end_layout
+
+\begin_layout Standard
+The literature suggests implementing the EL optimization through the inner
+ loop and outer loop.
+ Much care has to be executed in the programming of the high-dimensional
+ inner loop.
+ After experimenting with several solvers, we find 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{MOSEK}
+\end_layout
+
+\end_inset
+
+, a commercial solver specialized in convex programming, efficiently returns
+ reliable results.
+ We use the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{MOSEK Matlab toolbox}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{http://docs.mosek.com/7.0/toolbox.pdf}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ under its free academic license.
+ In the box below is the chuck of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Matlab}
+\end_layout
+
+\end_inset
+
+ code that formulates the problem.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+singlespace
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+% the criterion function
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.opr = repmat('log', [n 1]);
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.opri = zeros(n, 1);
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.oprj = (1:n)';
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.oprf = ones(n, 1);
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.oprg = ones(n, 1);
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+% the constraints
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.c = sparse( zeros(n, 1) );
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.a = [ ones(1,n); h'] ; % data
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.blc = [ 1; -tau*ones(m, 1) ]; % moment lower bound
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.buc = [ 1; tau*ones(m, 1) ]; % moment upper bound
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.blx = sparse( zeros(n, 1) ); % lower bound of pi's
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+prob.bux = ones(n, 1); % upper bound of pi's
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Under a fixed trial value 
+\begin_inset Formula $\beta$
+\end_inset
+
+, the probability mass  
+\begin_inset Formula $p=\left\{ p_{i}\right\} _{i=1}^{n}$
+\end_inset
+
+ is the parameter to be optimized.
+ The first five lines tell the solver the criterion function is 
+\begin_inset Formula $\sum_{i=1}^{n}\log p_{i}$
+\end_inset
+
+.
+ The next six lines specify the constraints.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{prob.a}
+\end_layout
+
+\end_inset
+
+ corresponds to the data matrix in the center of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:numerical_formulation"
+
+\end_inset
+
+) below, and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{prob.blc}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{prob.buc}
+\end_layout
+
+\end_inset
+
+ are associated with the lower bound and the upper bound of each restriction.
+ 
+\begin_inset Formula 
+\begin{equation}
+\left(\begin{array}{c}
+1\\
+-\tau\\
+\vdots\\
+-\tau
+\end{array}\right)\leq\left(\begin{array}{ccc}
+1 & \cdots & 1\\
+h_{11}\left(\beta\right) & \cdots & h_{n1}\left(\beta\right)\\
+\vdots & \ddots & \vdots\\
+h_{m1}\left(\beta\right) & \cdots & h_{nm}\left(\beta\right)
+\end{array}\right)\left(\begin{array}{c}
+p_{1}\\
+\vdots\\
+p_{n}
+\end{array}\right)\leq\left(\begin{array}{c}
+1\\
+\tau\\
+\vdots\\
+\tau
+\end{array}\right)\label{eq:numerical_formulation}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{prob.blx}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{prob.bux}
+\end_layout
+
+\end_inset
+
+ specify 
+\begin_inset Formula $0\leq p_{i}\leq1$
+\end_inset
+
+ for every 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ We feed all the ingredients of the optimization problem into the following
+ command
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+singlespace
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+res = mskscopt(prob.opr, prob.opri, prob.oprj, prob.oprf,...
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+ prob.oprg, prob.c, prob.a, prob.blc, prob.buc, prob.blx, prob.bux,...
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+ [], 'maximize' );
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+It is recommended to check the problem status and solution status after
+ execution.
+ If the solution status is 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{'OPTIMAL'}
+\end_layout
+
+\end_inset
+
+, we are safe to collect the results; otherwise, say if the constraints
+ are infeasible, we can assign 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Inf}
+\end_layout
+
+\end_inset
+
+ to the profile log-likelihood function.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+singlespace
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+if strcmp( res.sol.itr.solsta, 'OPTIMAL') 
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+L_hat = -res.sol.itr.pobjval; % the optimal value of the function
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+gam = sparse( res.sol.itr.y/n ); % collect the Lagrangian multipliers
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+gam(1) = []; % remove the 1st element associated with sum(pi) == 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+else
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{1cm}
+\end_layout
+
+\end_inset
+
+L_hat = Inf; % specify Inf, or a large value to indicate infeasibility
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+end
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Though many solvers will automatically evaluate the first-order derivative
+ by numerical differentiation, providing an analytical form of the first-order
+ derivative will help speed up and improve numerical accuracy in the outer
+ optimization.
+ Compared to the usual case, the analytical form of the first-order derivative
+ of PEL contains and additional term due to 
+\begin_inset Formula $\widehat{\sigma}\left(\beta\right)$
+\end_inset
+
+.
+ Here we give the explicit form of this derivative.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial\beta}\ell_{n}^{\tau}\left(\beta\right) & = & -\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)\left[\sum_{j=1}^{m}\frac{\widehat{\gamma}_{j}\left(\beta\right)}{\widehat{\sigma}_{j}\left(\beta\right)}\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)\right]+\frac{1}{2}\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)\left\{ \sum_{j=1}^{m}\frac{\widehat{\gamma}_{j}\left(\beta\right)g_{ij}\left(\beta\right)}{\widehat{\sigma}_{j}^{3}\left(\beta\right)}\mathrm{cov}_{n}\left(g_{ij}\left(\beta\right),\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)\right)\right\} 
+\end{eqnarray*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)$
+\end_inset
+
+ is a 
+\begin_inset Formula $K\times1$
+\end_inset
+
+ vector and where 
+\begin_inset Formula 
+\[
+\mathrm{cov}_{n}\left(g_{ij}\left(\beta\right),\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)\right)=\mathbb{E}_{n}\left[\left(g_{ij}\left(\beta\right)-\mathbb{E}_{n}\left[g_{ij}\left(\beta\right)\right]\right)\left(\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)-\mathbb{E}_{n}\left[\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)\right]\right)\right]
+\]
+
+\end_inset
+
+ is the sample covariance of 
+\begin_inset Formula $g_{ij}\left(\beta\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)$
+\end_inset
+
+.
+ The second order condition is too complicated and not necessary for numerical
+ optimization.
+\end_layout
+
+\begin_layout Plain Layout
+When we have an analytical form of 
+\begin_inset Formula $\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)$
+\end_inset
+
+, 
+\begin_inset Formula 
+\begin{eqnarray*}
+H_{ij}\left(\beta\right) & = & \frac{1}{\widehat{\sigma}_{j}\left(\beta\right)}\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)-\frac{g_{ij}\left(\beta\right)}{2\widehat{\sigma}_{j}^{3}\left(\beta\right)}\mathrm{cov}_{n}\left(g_{ij}\left(\beta\right),\frac{\partial}{\partial\beta}g_{ij}\left(\beta\right)\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
