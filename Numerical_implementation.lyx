@@ -140,6 +140,85 @@ Zhentao Shi
 first draft: September, 2014
 \end_layout
 
+\begin_layout Section
+Concavity
+\end_layout
+
+\begin_layout Standard
+The original Lagrangian associated with the primal problem is 
+\begin_inset Formula 
+\begin{equation}
+\mathcal{L}_{n}^{\tau}\left(\beta,p,\gamma_{A},\gamma\right)=\frac{1}{n}\sum_{i=1}^{n}\log p_{i}+\log n+\gamma_{A}\left(1-\sum_{i=1}^{n}p_{i}\right)+\gamma'\left(\tau-\left|\sum_{i=1}^{n}p_{i}h_{i}\left(\beta\right)\right|\right).\label{eq:1}
+\end{equation}
+
+\end_inset
+
+If we can show 
+\begin_inset Formula 
+\begin{equation}
+\widehat{\gamma}'\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{i}\left(\beta\right)=\tau\left\Vert \widehat{\gamma}\right\Vert _{1},\label{eq:linear_Lag_1}
+\end{equation}
+
+\end_inset
+
+in the optimization of the Lagrangian, then the optimizer of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+) will be the same as that of 
+\begin_inset Formula 
+\[
+\mathcal{L}_{n}^{\tau}\left(\beta,p,\gamma_{A},\gamma\right)=\frac{1}{n}\sum_{i=1}^{n}\log p_{i}+\log n+\gamma_{A}\left(1-\sum_{i=1}^{n}p_{i}\right)+\gamma'\sum_{i=1}^{n}p_{i}h_{i}\left(\beta\right)-\tau\left\Vert \gamma\right\Vert _{1}.
+\]
+
+\end_inset
+
+ We now verify (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:linear_Lag_1"
+
+\end_inset
+
+).
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+ &  & \widehat{\gamma}'\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{i}\left(\beta\right)-\tau\left\Vert \widehat{\gamma}\right\Vert _{1}\\
+ & = & \widehat{\gamma}'\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{i}\left(\beta\right)-\tau\widehat{\gamma}'\mbox{sign}\left(\widehat{\gamma}\right)\\
+ & = & \sum_{\left\{ j:\widehat{\gamma}_{j}=0\right\} }\widehat{\gamma}_{j}\left(\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)-\tau\mbox{sign}\left(\widehat{\gamma}_{j}\right)\right)+\sum_{\left\{ j:\widehat{\gamma}_{j}\neq0\right\} }\widehat{\gamma}_{j}\left(\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)-\tau\mbox{sign}\left(\widehat{\gamma}_{j}\right)\right)\\
+ & = & \sum_{\left\{ j:\widehat{\gamma}_{j}\neq0\right\} }\widehat{\gamma}_{j}\left(\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)-\tau\mbox{sign}\left(\widehat{\gamma}_{j}\right)\right)\\
+ & = & \sum_{\left\{ j:\widehat{\gamma}_{j}\neq0\right\} }\widehat{\gamma}_{j}\left(\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)-\mbox{sign}^{2}\left(\widehat{\gamma}_{j}\right)\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)\right)=0
+\end{eqnarray*}
+
+\end_inset
+
+where the last equality follow by the Krush-Kuhn-Tucker condition that 
+\begin_inset Formula $\left|\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)\right|=\tau$
+\end_inset
+
+ for any moment 
+\begin_inset Formula $j$
+\end_inset
+
+ such that 
+\begin_inset Formula $\widehat{\gamma}_{j}\neq0$
+\end_inset
+
+, so 
+\begin_inset Formula $\tau=\mbox{sign}\left(\widehat{\gamma}_{j}\right)\left(\sum_{i=1}^{n}\widehat{p}_{i}\left(\beta\right)h_{ij}\left(\beta\right)\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
 \begin_layout Standard
 The literature suggests implementing the EL optimization through the inner
  loop and outer loop.

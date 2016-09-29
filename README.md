@@ -1,6 +1,10 @@
 
 
-This document briefly describes the code that implement the REL and the boosting-type greedy algorithm in my paper ["Econometric Estimation with High-Dimensional Moment Equalities"](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2491102) via a demonstration with the Chinese trade data.
+This document briefly describes the code that implement the REL and the boosting-type greedy algorithm in my paper
+
+["Econometric Estimation with High-Dimensional Moment Equalities"](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2491102), 2016, *Journal of Econometrics*, 195, 104-119
+
+ via a demonstration with the Chinese trade data.
 
 
 ## Prerequisite
